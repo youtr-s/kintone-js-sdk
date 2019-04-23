@@ -8,6 +8,7 @@ module.exports = {
   PASSWORD: 'your_password',
   PROXY_HOST: 'your_proxy',
   PROXY_PORT: '3128',
+  API_TOKEN_VALUE: 'Api_token_value',
   GUEST_SPACEID: 1,
   MAX_VALUE: 2147483647,
   MAIN_PATH_BASE: '../../../../src/base/main',
