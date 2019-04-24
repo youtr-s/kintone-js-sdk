@@ -13,6 +13,7 @@ module.exports = {
   MAIN_PATH_BASE: '../../../../src/base/main',
   MAIN_PATH_NODE: '../../../../src/node/main',
   USER_AGENT: `${PACKAGE_FILE.name}/${PACKAGE_FILE.version}`,
+  ERROR_MESSAGE: '../../../resource/kintoneErrorMessage.json',
   getPasswordAuth: (userName, password) => {
     return Buffer.from(userName + ':' + password).toString('base64');
   },
