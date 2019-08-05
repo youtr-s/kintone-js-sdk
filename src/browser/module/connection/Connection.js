@@ -3,11 +3,10 @@ import * as kintoneBaseJSSDK from '../../../base/main';
  * Connection module
  */
 export class Connection extends kintoneBaseJSSDK.Connection {
-
   /**
-     * @param {kintoneBaseJSSDK.Auth} auth
-     * @param {Integer} guestSpaceID
-     */
+   * @param {kintoneBaseJSSDK.Auth} auth
+   * @param {Integer} guestSpaceID
+   */
   constructor(auth, guestSpaceID) {
     if (auth instanceof kintoneBaseJSSDK.Auth) {
       super(window.location.host, auth, guestSpaceID);
@@ -19,27 +18,64 @@ export class Connection extends kintoneBaseJSSDK.Connection {
     this.headers = [];
   }
   /**
-     * request to URL
-     * @param {String} method
-     * @param {String} restAPIName
-     * @param {String} body
-     * @return {Promise}
-     */
+   * request to URL
+   * @param {String} method
+   * @param {String} restAPIName
+   * @param {String} body
+   * @return {Promise}
+   */
   request(methodName, restAPIName, body) {
     if (window && window.kintone && !this.kintoneAuth) {
       // use kintone.api
-      return kintone.api(super.getUri(restAPIName), String(methodName).toUpperCase(), body).then((response) => {
-        return response;
-      }).catch(err => {
-        const error = {
-          response: {
-            data: err
-          }
-        };
-        throw error;
-      });
+      return kintone
+        .api(super.getUri(restAPIName), String(methodName).toUpperCase(), body)
+        .then(response => {
+          return response;
+        })
+        .catch(err => {
+          const error = {
+            response: {
+              data: err
+            }
+          };
+          throw error;
+        });
     }
     return super.request(methodName, restAPIName, body);
+  }
+
+  /**
+   * request to URL
+   * @param {String} method
+   * @param {String} restAPIName
+   * @param {String} body
+   * @return {Promise}
+   */
+  universalRequest(methodName, restAPIName, body) {
+    this.headers.forEach(httpHeaderObj => {
+      const headerKey = httpHeaderObj.getKey();
+      this.headersRequest[headerKey] = httpHeaderObj.getValue();
+    });
+    if (window && window.kintone) {
+      // use kintone.api
+      console.log('kintone proxy!');
+      return kintone
+        .proxy(restAPIName, String(methodName).toUpperCase(), this.headersRequest, body || {})
+        .then(response => {
+          super.refreshHeader();
+          return response;
+        })
+        .catch(err => {
+          const error = {
+            response: {
+              data: err
+            }
+          };
+          super.refreshHeader();
+          throw error;
+        });
+    }
+    return super.universalRequest(methodName, restAPIName, body);
   }
   /**
    * Upload file from local to kintone environment

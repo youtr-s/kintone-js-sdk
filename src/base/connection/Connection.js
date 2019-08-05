@@ -22,6 +22,7 @@ class Connection {
     this.guestSpaceID = parseInt(guestSpaceID, 10);
 
     this.headers = [];
+    this.headersRequest = {};
     this.options = {};
 
     this.setAuth(auth);
@@ -45,26 +46,35 @@ class Connection {
    * @return {Promise}
    */
   request(methodName, restAPIName, body) {
-    // Set Header
-    const headersRequest = {};
     // set header with credentials
     this.auth.createHeaderCredentials().forEach((httpHeaderObj) => {
-      headersRequest[httpHeaderObj.getKey()] = httpHeaderObj.getValue();
+      this.headersRequest[httpHeaderObj.getKey()] = httpHeaderObj.getValue();
     });
+    return this.universalRequest(methodName, restAPIName, body);
+  }
+
+  /**
+   * request to URL
+   * @param {String} methodName
+   * @param {String} restAPIName
+   * @param {Object} body
+   * @return {Promise}
+   */
+  universalRequest(methodName, restAPIName, body) {
     this.headers.forEach((httpHeaderObj) => {
       const headerKey = httpHeaderObj.getKey();
-      if (headersRequest.hasOwnProperty(headerKey) && headerKey === CONNECTION_CONST.BASE.USER_AGENT) {
-        headersRequest[headerKey] += ' ' + httpHeaderObj.getValue();
+      if (this.headersRequest.hasOwnProperty(headerKey) && headerKey === CONNECTION_CONST.BASE.USER_AGENT) {
+        this.headersRequest[headerKey] += ' ' + httpHeaderObj.getValue();
       } else {
-        headersRequest[headerKey] = httpHeaderObj.getValue();
+        this.headersRequest[headerKey] = httpHeaderObj.getValue();
       }
-      this.USER_AGENT = headersRequest[CONNECTION_CONST.BASE.USER_AGENT];
+      this.USER_AGENT = this.headersRequest[CONNECTION_CONST.BASE.USER_AGENT];
     });
     // Set request options
     const requestOptions = this.options;
     requestOptions.method = String(methodName).toUpperCase();
     requestOptions.url = this.getUri(restAPIName);
-    requestOptions.headers = headersRequest;
+    requestOptions.headers = this.headersRequest;
     // set data to param if using GET method
     if (requestOptions.method === 'GET') {
       requestOptions.params = body;
@@ -81,6 +91,7 @@ class Connection {
     this.refreshHeader();
     return request;
   }
+
   /**
    * request to URL
    * @param {String} methodName
@@ -282,6 +293,13 @@ class Connection {
     this.headers.push(new HTTPHeader(key, value));
     return this;
   }
+
+  setHeaders(headers) {
+    headers.forEach((key, val) => {
+      this.setHeader(key, val);
+    });
+    return this;
+  }
   /**
    * set auth for connection
    * @param {Auth} auth
@@ -301,6 +319,7 @@ class Connection {
       header.push(new HTTPHeader(CONNECTION_CONST.BASE.USER_AGENT, this.USER_AGENT));
     }
     this.headers = header;
+    this.headersRequest = {};
   }
 }
 module.exports = Connection;
