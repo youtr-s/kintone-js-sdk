@@ -98,11 +98,10 @@
     
       <!-- Application header -->
 <header class="md-header" data-md-component="header">
-
   <!-- Top-level navigation -->
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
-
+ 
       <!-- Link to home -->
       <div class="md-flex__cell md-flex__cell--shrink">
         <a href="../.."
@@ -113,27 +112,27 @@
           
         </a>
       </div>
-
+ 
       <!-- Button to toggle drawer -->
       <div class="md-flex__cell md-flex__cell--shrink">
         <label class="md-icon md-icon--menu md-header-nav__button"
             for="__drawer"></label>
       </div>
-
+ 
       <!-- Header title -->
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title"
             data-md-component="title">
-            <a href="../..">kintone js SDK</a>&nbsp;<a style="text-decoration: underline;" href="../../../latest/versions">v0.5.1</a>
+            <a href="../..">kintone js SDK</a> <a style="text-decoration: underline;" href="../../versions">v0.6.0</a>
         </div>
       </div>
-
+ 
       <!-- Button to open search dialogue -->
       <div class="md-flex__cell md-flex__cell--shrink">
         
           <label class="md-icon md-icon--search md-header-nav__button"
               for="__search"></label>
-
+ 
           <!-- Search interface -->
           
 <div class="md-search" data-md-component="search" role="dialog">
@@ -160,7 +159,7 @@
 </div>
         
       </div>
-
+ 
       <!-- Repository containing source -->
       
         <div class="md-flex__cell md-flex__cell--shrink">
@@ -1068,7 +1067,6 @@
 <blockquote>
 <ul>
 <li>Retrieves details of all records from an app using a query string.</li>
-<li>Can't indicate limit and offset of query.</li>
 <li>Number of records can be retrieved at once is greater than the default limitations</li>
 </ul>
 </blockquote>
@@ -1113,8 +1111,20 @@
 <td>(optional)</td>
 <td>If "true", the request will retrieve total count of records match with query conditions.</td>
 </tr>
+<tr>
+<td>params.seek</td>
+<td>Boolean</td>
+<td>(optional)</td>
+<td>Default value is "false".<br> ・false：using offset method<br> You can get all records within limitation of offset.(※<a href="https://developer.cybozu.io/hc/ja/articles/202331474#step2">Around July 2020, cybozu plan to set an offset upper limit of 10,000</a>)<br> You can not specify "offset" and "limit" clause on the query, when you use offset method because these clauses are already used internal.<br><br> ・true：using seek method<br>You get all records(over limitation of offset) in order by record ID. <br>But you can not specify "order by", "offset" and "limit" clause on the query, when you use seek method because these clauses are already used internal.</td>
+</tr>
 </tbody>
 </table>
+<p><em>usage about offset and seek method</em></p>
+<blockquote>
+<p><a href="https://developer.cybozu.io/hc/ja/articles/360030757312">・usage about offset method and seek method(ja)</a><br />
+<a href="https://developer.kintone.io/hc/en-us/articles/230613327-Get-all-records-from-an-App-the-offset-method-">・info about offset method(us)</a><br />
+<a href="https://developer.kintone.io/hc/en-us/articles/360014037114-Get-all-records-from-an-App-the-seek-method-">・info about seek method(us)</a></p>
+</blockquote>
 <p><strong>Return</strong></p>
 <p>Promise</p>
 <p><strong>Sample code</strong></p>
